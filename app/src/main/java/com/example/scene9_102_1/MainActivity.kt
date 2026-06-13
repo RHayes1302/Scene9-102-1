@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
@@ -57,10 +58,10 @@ fun UserProfileScreen() {
             likesCount = likes,
             friends = friends,
             ageGroup = ageGroup,
-            onAddFriend = { addFriend(friendsList = friends, newFriend = "Sophia") },
-            onRemoveFriend = { removeFriend(friendsList = friends, friendName = "Max") },
+            onAddFriend = { addFriend( friends,  "Sophia") },
+            onRemoveFriend = { removeFriend(friends, "Ethan") },
             onLike = { likes++ },
-            onChangeUsername = { newUsername -> username = newUsername }
+            onChangeUsername = {username= "Test User" }
         )
     }
 }
@@ -79,7 +80,7 @@ fun ProfileContent(
     onAddFriend: () -> Unit,
     onRemoveFriend: () -> Unit,
     onLike: () -> Unit,
-    onChangeUsername: (String) -> Unit
+    onChangeUsername: () -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -93,17 +94,36 @@ fun ProfileContent(
         Text(text = username, modifier = Modifier.padding(5.dp))
         Text(text = address, modifier = Modifier.padding(5.dp))
         Text(text = "Likes: $likesCount", modifier = Modifier.padding(5.dp))
-        Text(text = "Verified: $isVerified", modifier = Modifier.padding(5.dp))
-        Text(text = "Friends:", modifier = Modifier.padding(5.dp))
+        Text(text = "Verified: ${if(isVerified) "Yes" else "No"}", modifier = Modifier.padding(5.dp))
+        Text(text = "Friends: ${friends.size}", modifier = Modifier.padding(5.dp))
         friends.forEach { friend ->
             Text(text = friend, modifier = Modifier.padding(5.dp))
         }
-        Button(onClick = onAddFriend) {
-            Text(text = "Add Friend")
+        Row() {
+            Button(onClick = onAddFriend) {
+                Text(text = "Add Friend")
+            }
+            Button(onClick = onRemoveFriend) {
+                Text(text = "Remove Friend")
+            }
+
+
         }
-        Button(onClick = onRemoveFriend) {
-            Text(text = "Remove Friend")
+        Row() {
+
+            Button (onClick = onLike){
+                Text( "Like")
+            }
+           Button(onClick = onChangeUsername) {
+               Text("Change User Name")
+           }
+
+
+
+
+
         }
+
     }
 }
 
