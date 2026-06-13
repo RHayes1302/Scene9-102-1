@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -43,6 +44,8 @@ fun UserProfileScreen() {
         mutableStateListOf("Ethan", "Harley", "Rhys", "Leila", "Junior", "Laiza")
     }
 
+    val ageGroup = getAgeGroup(age)
+
     Surface {
         ProfileContent(
             name = name,
@@ -52,7 +55,10 @@ fun UserProfileScreen() {
             username = username,
             isVerified = isVerified,
             likesCount = likes,
-            friends = friends,                                    // added
+            friends = friends,
+            ageGroup = ageGroup,
+            onAddFriend = { addFriend(friendsList = friends, newFriend = "Sophia") },
+            onRemoveFriend = { removeFriend(friendsList = friends, friendName = "Max") },
             onLike = { likes++ },
             onChangeUsername = { newUsername -> username = newUsername }
         )
@@ -68,7 +74,10 @@ fun ProfileContent(
     username: String,
     isVerified: Boolean,
     likesCount: Int,
-    friends: List<String>,                                        // added
+    friends: List<String>,
+    ageGroup: String,
+    onAddFriend: () -> Unit,
+    onRemoveFriend: () -> Unit,
     onLike: () -> Unit,
     onChangeUsername: (String) -> Unit
 ) {
@@ -80,14 +89,39 @@ fun ProfileContent(
         Text(text = name, modifier = Modifier.padding(5.dp))
         Text(text = birthday, modifier = Modifier.padding(5.dp))
         Text(text = "Age: $age", modifier = Modifier.padding(5.dp))
+        Text(text = "Age Group: $ageGroup", modifier = Modifier.padding(5.dp))
         Text(text = username, modifier = Modifier.padding(5.dp))
         Text(text = address, modifier = Modifier.padding(5.dp))
         Text(text = "Likes: $likesCount", modifier = Modifier.padding(5.dp))
         Text(text = "Verified: $isVerified", modifier = Modifier.padding(5.dp))
-
         Text(text = "Friends:", modifier = Modifier.padding(5.dp))
         friends.forEach { friend ->
             Text(text = friend, modifier = Modifier.padding(5.dp))
         }
+        Button(onClick = onAddFriend) {
+            Text(text = "Add Friend")
+        }
+        Button(onClick = onRemoveFriend) {
+            Text(text = "Remove Friend")
+        }
     }
+}
+
+fun getAgeGroup(age: Int): String {
+    return when {
+        age < 13 -> "Child"
+        age in 13..17 -> "Teenager"
+        age in 18..59 -> "Adult"
+        else -> "Senior"
+    }
+}
+
+fun addFriend(friendsList: MutableList<String>, newFriend: String) {
+    if (!friendsList.contains(newFriend)) {
+        friendsList.add(newFriend)
+    }
+}
+
+fun removeFriend(friendsList: MutableList<String>, friendName: String) {
+    friendsList.remove(friendName)
 }
